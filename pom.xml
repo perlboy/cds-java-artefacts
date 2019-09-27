@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>au.org.consumerdatastandards</groupId>
     <artifactId>cds-java-artefacts</artifactId>
-    <version>0.9.6-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>CDS Java Artefacts</name>
     <description>A collection of Java artefacts for Consumer Data Standards Australia</description>
@@ -56,7 +56,7 @@
         <junit.version>5.5.0</junit.version>
         <jacoco.version>0.8.4</jacoco.version>
         <reflections.version>0.9.11</reflections.version>
-        <swagger-core.version>1.5.22</swagger-core.version>
+        <swagger-core.version>1.5.23</swagger-core.version>
         <spring-boot.version>2.1.5.RELEASE</spring-boot.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
     </properties>
@@ -205,8 +205,8 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${javadoc.plugin.version}</version>
                     <configuration>
-			 <encoding>UTF-8</encoding>
-			 <source>8</source>
+                        <encoding>UTF-8</encoding>
+                        <source>8</source>
                     </configuration>
                     <executions>
                         <execution>
@@ -249,6 +249,20 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
     <dependencyManagement>
         <dependencies>
@@ -256,11 +270,6 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-core</artifactId>
-                <version>${swagger-core.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.reflections</groupId>
