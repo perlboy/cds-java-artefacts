@@ -1,9 +1,7 @@
 package au.org.consumerdatastandards.holder;
 
-import com.fasterxml.jackson.databind.Module;
-
 import au.org.consumerdatastandards.holder.util.SwaggerJacksonModuleRegistrar;
-
+import com.fasterxml.jackson.databind.Module;
 import org.h2.server.web.WebServlet;
 import org.openapitools.jackson.nullable.JsonNullableModule;
 import org.springframework.boot.CommandLineRunner;
@@ -32,15 +30,15 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 })
 public class HolderApplication implements CommandLineRunner {
 
+    public static void main(String[] args) {
+        new SpringApplication(HolderApplication.class).run(args);
+    }
+
     @Override
     public void run(String... arg0) {
         if (arg0.length > 0 && arg0[0].equals("exitcode")) {
             throw new ExitException();
         }
-    }
-
-    public static void main(String[] args) {
-        new SpringApplication(HolderApplication.class).run(args);
     }
 
     class ExitException extends RuntimeException implements ExitCodeGenerator {
@@ -64,7 +62,7 @@ public class HolderApplication implements CommandLineRunner {
 
     @Bean
     public ServletRegistrationBean<WebServlet> h2servletRegistration() {
-        ServletRegistrationBean<WebServlet> registration = new ServletRegistrationBean<WebServlet>(new WebServlet());
+        ServletRegistrationBean<WebServlet> registration = new ServletRegistrationBean<>(new WebServlet());
         registration.addUrlMappings("/console/*");
         return registration;
     }

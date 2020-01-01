@@ -74,21 +74,7 @@ public class ApiClient {
         addDefaultHeader("Content-Type", "application/json");
         addDefaultHeader("x-v", "1");
         addDefaultHeader("x-min-v", "1");
-        addDefaultHeader("x-fapi-customer-ip-address", getIpAddress());
         addDefaultHeader("x-fapi-interaction-id", UUID.randomUUID().toString());
-    }
-
-    private String getIpAddress() {
-      String ipAddress = "unknown";
-      try {
-        final DatagramSocket socket = new DatagramSocket();
-        socket.connect(InetAddress.getByName("203.98.87.18"), 53); // ns1.internet.net.au.
-        ipAddress = socket.getLocalAddress().getHostAddress();
-        socket.disconnect();
-      } catch (SocketException | UnknownHostException e) {
-        // ignored
-      }
-      return ipAddress;
     }
 
     /**
@@ -254,6 +240,10 @@ public class ApiClient {
     public ApiClient setUserAgent(String userAgent) {
         addDefaultHeader("User-Agent", userAgent);
         return this;
+    }
+
+    public String getUserAgent() {
+        return defaultHeaderMap.get("User-Agent");
     }
 
     /**
@@ -993,7 +983,7 @@ public class ApiClient {
     private void applySslSettings() {
         try {
             TrustManager[] trustManagers = null;
-            HostnameVerifier hostnameVerifier = null;
+            HostnameVerifier hostnameVerifier;
             if (!verifyingSsl) {
                 trustManagers = new TrustManager[]{
                     new X509TrustManager() {
