@@ -7,30 +7,28 @@
  */
 package au.org.consumerdatastandards.client.api;
 
-import au.org.consumerdatastandards.client.*;
-import au.org.consumerdatastandards.client.model.*;
+import au.org.consumerdatastandards.client.ApiCallback;
+import au.org.consumerdatastandards.client.ApiClient;
+import au.org.consumerdatastandards.client.ApiException;
+import au.org.consumerdatastandards.client.ApiResponse;
+import au.org.consumerdatastandards.client.Pair;
+import au.org.consumerdatastandards.client.model.ResponseCommonDiscoveryStatus;
+import au.org.consumerdatastandards.client.model.ResponseDiscoveryOutagesList;
 import com.google.gson.reflect.TypeToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import ch.qos.logback.classic.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CommonDiscoveryAPI {
 
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(CommonDiscoveryAPI.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommonDiscoveryAPI.class);
 
     private ApiClient apiClient;
-
-    public CommonDiscoveryAPI() {
-        this(new ApiClient());
-    }
-
-    public CommonDiscoveryAPI(ApiClient apiClient) {
-        this.apiClient = apiClient;
-    }
 
     public ApiClient getApiClient() {
         return apiClient;
@@ -47,10 +45,19 @@ public class CommonDiscoveryAPI {
      * @throws ApiException If fail to serialize the request body object
      * http.response.details
      * <table summary="Response Details" border="1">
-     *   <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-     *   <tr><td> ResponseCode.OK </td><td> Success </td><td>  -  </td></tr>
+     *    <tr>
+     *        <td> Status Code </td>
+     *        <td> Description </td>
+     *        <td> Response Headers </td>
+     *    </tr>
+     *    <tr>
+     *        <td> 200 </td>
+     *        <td> Success </td>
+     *        <td>  * x-v - The [version](#response-headers) of the API end point that the data holder has responded with. <br>  </td>
+     *    </tr>
      * </table>
-     */
+
+*/
     public okhttp3.Call getOutagesCall(final ApiCallback _callback) throws ApiException {
 
         Object postBody = null;
@@ -70,7 +77,7 @@ public class CommonDiscoveryAPI {
 
     @SuppressWarnings("rawtypes")
     private okhttp3.Call getOutagesValidateBeforeCall(final ApiCallback _callback) throws ApiException {
-        
+
 
         return getOutagesCall(_callback);
     }
@@ -82,10 +89,19 @@ public class CommonDiscoveryAPI {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * http.response.details
      * <table summary="Response Details" border="1">
-     *   <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-     *   <tr><td> ResponseCode.OK </td><td> Success </td><td>  -  </td></tr>
+     *    <tr>
+     *        <td> Status Code </td>
+     *        <td> Description </td>
+     *        <td> Response Headers </td>
+     *    </tr>
+     *    <tr>
+     *        <td> 200 </td>
+     *        <td> Success </td>
+     *        <td>  * x-v - The [version](#response-headers) of the API end point that the data holder has responded with. <br>  </td>
+     *    </tr>
      * </table>
-     */
+
+*/
     public ResponseDiscoveryOutagesList getOutages() throws ApiException {
 
         LOGGER.trace("getOutages");
@@ -101,10 +117,19 @@ public class CommonDiscoveryAPI {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * http.response.details
      * <table summary="Response Details" border="1">
-     *   <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-     *   <tr><td> ResponseCode.OK </td><td> Success </td><td>  -  </td></tr>
+     *    <tr>
+     *        <td> Status Code </td>
+     *        <td> Description </td>
+     *        <td> Response Headers </td>
+     *    </tr>
+     *    <tr>
+     *        <td> 200 </td>
+     *        <td> Success </td>
+     *        <td>  * x-v - The [version](#response-headers) of the API end point that the data holder has responded with. <br>  </td>
+     *    </tr>
      * </table>
-     */
+
+*/
     public ApiResponse<ResponseDiscoveryOutagesList> getOutagesWithHttpInfo() throws ApiException {
         okhttp3.Call call = getOutagesValidateBeforeCall(null);
         Type returnType = new TypeToken<ResponseDiscoveryOutagesList>(){}.getType();
@@ -119,10 +144,20 @@ public class CommonDiscoveryAPI {
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      * http.response.details
      * <table summary="Response Details" border="1">
-     *   <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-     *   <tr><td> ResponseCode.OK </td><td> Success </td><td>  -  </td></tr>
+     *    <tr>
+     *        <td> Status Code </td>
+     *        <td> Description </td>
+     *        <td> Response Headers </td>
+     *    </tr>
+     *    <tr>
+     *        <td> 200 </td>
+     *        <td> Success </td>
+     *        <td>  * x-v - The [version](#response-headers) of the API end point that the data holder has responded with. <br>  </td>
+     *    </tr>
      * </table>
-     */
+
+
+*/
     public okhttp3.Call getOutagesAsync(final ApiCallback<ResponseDiscoveryOutagesList> _callback) throws ApiException {
 
         LOGGER.trace("Asynchronously getOutages");
@@ -139,10 +174,19 @@ public class CommonDiscoveryAPI {
      * @throws ApiException If fail to serialize the request body object
      * http.response.details
      * <table summary="Response Details" border="1">
-     *   <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-     *   <tr><td> ResponseCode.OK </td><td> Success </td><td>  -  </td></tr>
+     *    <tr>
+     *        <td> Status Code </td>
+     *        <td> Description </td>
+     *        <td> Response Headers </td>
+     *    </tr>
+     *    <tr>
+     *        <td> 200 </td>
+     *        <td> Success </td>
+     *        <td>  * x-v - The [version](#response-headers) of the API end point that the data holder has responded with. <br>  </td>
+     *    </tr>
      * </table>
-     */
+
+*/
     public okhttp3.Call getStatusCall(final ApiCallback _callback) throws ApiException {
 
         Object postBody = null;
@@ -162,7 +206,7 @@ public class CommonDiscoveryAPI {
 
     @SuppressWarnings("rawtypes")
     private okhttp3.Call getStatusValidateBeforeCall(final ApiCallback _callback) throws ApiException {
-        
+
 
         return getStatusCall(_callback);
     }
@@ -170,36 +214,54 @@ public class CommonDiscoveryAPI {
     /**
      * Get Status
      * Obtain a health check status for the implementation
-     * @return CommonDiscoveryStatus
+     * @return ResponseCommonDiscoveryStatus
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * http.response.details
      * <table summary="Response Details" border="1">
-     *   <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-     *   <tr><td> ResponseCode.OK </td><td> Success </td><td>  -  </td></tr>
+     *    <tr>
+     *        <td> Status Code </td>
+     *        <td> Description </td>
+     *        <td> Response Headers </td>
+     *    </tr>
+     *    <tr>
+     *        <td> 200 </td>
+     *        <td> Success </td>
+     *        <td>  * x-v - The [version](#response-headers) of the API end point that the data holder has responded with. <br>  </td>
+     *    </tr>
      * </table>
-     */
-    public CommonDiscoveryStatus getStatus() throws ApiException {
+
+*/
+    public ResponseCommonDiscoveryStatus getStatus() throws ApiException {
 
         LOGGER.trace("getStatus");
 
-        ApiResponse<CommonDiscoveryStatus> resp = getStatusWithHttpInfo();
+        ApiResponse<ResponseCommonDiscoveryStatus> resp = getStatusWithHttpInfo();
         return resp.getData();
     }
 
     /**
      * Get Status
      * Obtain a health check status for the implementation
-     * @return ApiResponse&lt;CommonDiscoveryStatus&gt;
+     * @return ApiResponse&lt;ResponseCommonDiscoveryStatus&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * http.response.details
      * <table summary="Response Details" border="1">
-     *   <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-     *   <tr><td> ResponseCode.OK </td><td> Success </td><td>  -  </td></tr>
+     *    <tr>
+     *        <td> Status Code </td>
+     *        <td> Description </td>
+     *        <td> Response Headers </td>
+     *    </tr>
+     *    <tr>
+     *        <td> 200 </td>
+     *        <td> Success </td>
+     *        <td>  * x-v - The [version](#response-headers) of the API end point that the data holder has responded with. <br>  </td>
+     *    </tr>
      * </table>
-     */
-    public ApiResponse<CommonDiscoveryStatus> getStatusWithHttpInfo() throws ApiException {
+
+*/
+    public ApiResponse<ResponseCommonDiscoveryStatus> getStatusWithHttpInfo() throws ApiException {
         okhttp3.Call call = getStatusValidateBeforeCall(null);
-        Type returnType = new TypeToken<CommonDiscoveryStatus>(){}.getType();
+        Type returnType = new TypeToken<ResponseCommonDiscoveryStatus>(){}.getType();
         return apiClient.execute(call, returnType);
     }
 
@@ -211,16 +273,24 @@ public class CommonDiscoveryAPI {
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      * http.response.details
      * <table summary="Response Details" border="1">
-     *   <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-     *   <tr><td> ResponseCode.OK </td><td> Success </td><td>  -  </td></tr>
+     *    <tr>
+     *        <td> Status Code </td>
+     *        <td> Description </td>
+     *        <td> Response Headers </td>
+     *    </tr>
+     *    <tr>
+     *        <td> 200 </td>
+     *        <td> Success </td>
+     *        <td>  * x-v - The [version](#response-headers) of the API end point that the data holder has responded with. <br>  </td>
+     *    </tr>
      * </table>
      */
-    public okhttp3.Call getStatusAsync(final ApiCallback<CommonDiscoveryStatus> _callback) throws ApiException {
+    public okhttp3.Call getStatusAsync(final ApiCallback<ResponseCommonDiscoveryStatus> _callback) throws ApiException {
 
         LOGGER.trace("Asynchronously getStatus");
 
         okhttp3.Call call = getStatusValidateBeforeCall(_callback);
-        Type returnType = new TypeToken<CommonDiscoveryStatus>(){}.getType();
+        Type returnType = new TypeToken<ResponseCommonDiscoveryStatus>(){}.getType();
         apiClient.executeAsync(call, returnType, _callback);
         return call;
     }

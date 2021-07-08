@@ -16,15 +16,29 @@ public class CommonOrganisation {
     public enum OrganisationType {
         COMPANY,
         GOVERNMENT_ENTITY,
-        OTHER,
         PARTNERSHIP,
         SOLE_TRADER,
-        TRUST
+        TRUST,
+        OTHER
     }
 
-    private String abn;
+    public enum IndustryCodeVersion {
+        ANZSIC_1292_0_2006_V2_0("ANZSIC_1292.0_2006_V2.0"),
+        ANZSIC_1292_0_2006_V1_0("ANZSIC_1292.0_2006_V1.0");
 
-    private String acn;
+        private final String value;
+
+        IndustryCodeVersion(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
+    private OffsetDateTime lastUpdateTime;
 
     private String agentFirstName;
 
@@ -34,44 +48,36 @@ public class CommonOrganisation {
 
     private String businessName;
 
-    private LocalDate establishmentDate;
+    private String legalName;
 
-    private String industryCode;
+    private String shortName;
+
+    private String abn;
+
+    private String acn;
 
     private Boolean isACNCRegistered;
 
-    private OffsetDateTime lastUpdateTime;
+    private String industryCode;
 
-    private String legalName;
+    private IndustryCodeVersion industryCodeVersion;
 
     private OrganisationType organisationType;
 
     private String registeredCountry;
 
-    private String shortName;
+    private LocalDate establishmentDate;
 
     /**
-     * Australian Business Number for the organisation
-     * @return abn
+     * The date and time that this record was last updated by the customer. If no update has occurred then this date should reflect the initial creation date for the data
+     * @return lastUpdateTime
      */
-    public String getAbn() {
-        return abn;
+    public OffsetDateTime getLastUpdateTime() {
+        return lastUpdateTime;
     }
 
-    public void setAbn(String abn) {
-        this.abn = abn;
-    }
-
-    /**
-     * Australian Company Number for the organisation. Required only if an ACN is applicable for the organisation type
-     * @return acn
-     */
-    public String getAcn() {
-        return acn;
-    }
-
-    public void setAcn(String acn) {
-        this.acn = acn;
+    public void setLastUpdateTime(OffsetDateTime lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
     }
 
     /**
@@ -99,7 +105,7 @@ public class CommonOrganisation {
     }
 
     /**
-     * The role of the individual identified as the agent who is providing authorisation.  Expected to be used for display.  Default to “Unspecified” if the role is not known
+     * The role of the individual identified as the agent who is providing authorisation.  Expected to be used for display. Default to Unspecified if the role is not known
      * @return agentRole
      */
     public String getAgentRole() {
@@ -123,27 +129,51 @@ public class CommonOrganisation {
     }
 
     /**
-     * The date the organisation described was established
-     * @return establishmentDate
+     * Legal name, if different to the business name
+     * @return legalName
      */
-    public LocalDate getEstablishmentDate() {
-        return establishmentDate;
+    public String getLegalName() {
+        return legalName;
     }
 
-    public void setEstablishmentDate(LocalDate establishmentDate) {
-        this.establishmentDate = establishmentDate;
+    public void setLegalName(String legalName) {
+        this.legalName = legalName;
     }
 
     /**
-     * [ANZSIC (2006)](http://www.abs.gov.au/anzsic) code for the organisation.
-     * @return industryCode
+     * Short name used for communication, if different to the business name
+     * @return shortName
      */
-    public String getIndustryCode() {
-        return industryCode;
+    public String getShortName() {
+        return shortName;
     }
 
-    public void setIndustryCode(String industryCode) {
-        this.industryCode = industryCode;
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+
+    /**
+     * Australian Business Number for the organisation
+     * @return abn
+     */
+    public String getAbn() {
+        return abn;
+    }
+
+    public void setAbn(String abn) {
+        this.abn = abn;
+    }
+
+    /**
+     * Australian Company Number for the organisation. Required only if an ACN is applicable for the organisation type
+     * @return acn
+     */
+    public String getAcn() {
+        return acn;
+    }
+
+    public void setAcn(String acn) {
+        this.acn = acn;
     }
 
     /**
@@ -159,31 +189,35 @@ public class CommonOrganisation {
     }
 
     /**
-     * The date and time that this record was last updated by the customer. If no update has occurred then this date should reflect the initial creation date for the data
-     * @return lastUpdateTime
+     * A valid <a href="http://www.abs.gov.au/anzsic">ANZSIC</a> code for the organisation.
+     * If the industry code held by the data holder is not one of the supported
+     * <a href="http://www.abs.gov.au/anzsic">ANZSIC</a> versions, then it must not be supplied.
+     * @return industryCode
      */
-    public OffsetDateTime getLastUpdateTime() {
-        return lastUpdateTime;
+    public String getIndustryCode() {
+        return industryCode;
     }
 
-    public void setLastUpdateTime(OffsetDateTime lastUpdateTime) {
-        this.lastUpdateTime = lastUpdateTime;
+    public void setIndustryCode(String industryCode) {
+        this.industryCode = industryCode;
     }
 
     /**
-     * Legal name, if different to the business name
-     * @return legalName
+     * The applicable <a href="http://www.abs.gov.au/ANZSIC">ANZSIC</a> release version of the industry code provided.
+     * Should only be supplied if industryCode is also supplied. If industryCode is supplied but industryCodeVersion
+     * is absent, default is ANZSIC_1292.0_2006_V2.0
+     * @return industryCodeVersion
      */
-    public String getLegalName() {
-        return legalName;
+    public IndustryCodeVersion getIndustryCodeVersion() {
+        return industryCodeVersion;
     }
 
-    public void setLegalName(String legalName) {
-        this.legalName = legalName;
+    public void setIndustryCodeVersion(IndustryCodeVersion industryCodeVersion) {
+        this.industryCodeVersion = industryCodeVersion;
     }
 
     /**
-     * Get organisationType
+     * Legal organisation type
      * @return organisationType
      */
     public OrganisationType getOrganisationType() {
@@ -207,15 +241,15 @@ public class CommonOrganisation {
     }
 
     /**
-     * Short name used for communication, if  different to the business name
-     * @return shortName
+     * The date the organisation described was established
+     * @return establishmentDate
      */
-    public String getShortName() {
-        return shortName;
+    public LocalDate getEstablishmentDate() {
+        return establishmentDate;
     }
 
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
+    public void setEstablishmentDate(LocalDate establishmentDate) {
+        this.establishmentDate = establishmentDate;
     }
 
     @Override
@@ -227,58 +261,61 @@ public class CommonOrganisation {
             return false;
         }
         CommonOrganisation commonOrganisation = (CommonOrganisation) o;
-        return Objects.equals(this.abn, commonOrganisation.abn) &&
-            Objects.equals(this.acn, commonOrganisation.acn) &&
+        return Objects.equals(this.lastUpdateTime, commonOrganisation.lastUpdateTime) &&
             Objects.equals(this.agentFirstName, commonOrganisation.agentFirstName) &&
             Objects.equals(this.agentLastName, commonOrganisation.agentLastName) &&
             Objects.equals(this.agentRole, commonOrganisation.agentRole) &&
             Objects.equals(this.businessName, commonOrganisation.businessName) &&
-            Objects.equals(this.establishmentDate, commonOrganisation.establishmentDate) &&
-            Objects.equals(this.industryCode, commonOrganisation.industryCode) &&
-            Objects.equals(this.isACNCRegistered, commonOrganisation.isACNCRegistered) &&
-            Objects.equals(this.lastUpdateTime, commonOrganisation.lastUpdateTime) &&
             Objects.equals(this.legalName, commonOrganisation.legalName) &&
+            Objects.equals(this.shortName, commonOrganisation.shortName) &&
+            Objects.equals(this.abn, commonOrganisation.abn) &&
+            Objects.equals(this.acn, commonOrganisation.acn) &&
+            Objects.equals(this.isACNCRegistered, commonOrganisation.isACNCRegistered) &&
+            Objects.equals(this.industryCode, commonOrganisation.industryCode) &&
+            Objects.equals(this.industryCodeVersion, commonOrganisation.industryCodeVersion) &&
             Objects.equals(this.organisationType, commonOrganisation.organisationType) &&
             Objects.equals(this.registeredCountry, commonOrganisation.registeredCountry) &&
-            Objects.equals(this.shortName, commonOrganisation.shortName);
+            Objects.equals(this.establishmentDate, commonOrganisation.establishmentDate);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
-            abn,
-            acn,
+            lastUpdateTime,
             agentFirstName,
             agentLastName,
             agentRole,
             businessName,
-            establishmentDate,
-            industryCode,
-            isACNCRegistered,
-            lastUpdateTime,
             legalName,
+            shortName,
+            abn,
+            acn,
+            isACNCRegistered,
+            industryCode,
+            industryCodeVersion,
             organisationType,
             registeredCountry,
-            shortName);
+            establishmentDate);
     }
 
     @Override
     public String toString() {
         return "class CommonOrganisation {\n" +
-            "   abn: " + toIndentedString(abn) + "\n" + 
-            "   acn: " + toIndentedString(acn) + "\n" + 
+            "   lastUpdateTime: " + toIndentedString(lastUpdateTime) + "\n" + 
             "   agentFirstName: " + toIndentedString(agentFirstName) + "\n" + 
             "   agentLastName: " + toIndentedString(agentLastName) + "\n" + 
             "   agentRole: " + toIndentedString(agentRole) + "\n" + 
             "   businessName: " + toIndentedString(businessName) + "\n" + 
-            "   establishmentDate: " + toIndentedString(establishmentDate) + "\n" + 
-            "   industryCode: " + toIndentedString(industryCode) + "\n" + 
-            "   isACNCRegistered: " + toIndentedString(isACNCRegistered) + "\n" + 
-            "   lastUpdateTime: " + toIndentedString(lastUpdateTime) + "\n" + 
             "   legalName: " + toIndentedString(legalName) + "\n" + 
-            "   organisationType: " + toIndentedString(organisationType) + "\n" + 
-            "   registeredCountry: " + toIndentedString(registeredCountry) + "\n" + 
             "   shortName: " + toIndentedString(shortName) + "\n" + 
+            "   abn: " + toIndentedString(abn) + "\n" + 
+            "   acn: " + toIndentedString(acn) + "\n" + 
+            "   isACNCRegistered: " + toIndentedString(isACNCRegistered) + "\n" + 
+            "   industryCode: " + toIndentedString(industryCode) + "\n" + 
+            "   industryCodeVersion: " + toIndentedString(industryCodeVersion) + "\n" +
+            "   organisationType: " + toIndentedString(organisationType) + "\n" +
+            "   registeredCountry: " + toIndentedString(registeredCountry) + "\n" + 
+            "   establishmentDate: " + toIndentedString(establishmentDate) + "\n" + 
             "}";
     }
 

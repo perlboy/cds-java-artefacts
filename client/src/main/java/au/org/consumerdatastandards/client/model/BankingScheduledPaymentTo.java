@@ -8,6 +8,7 @@
 package au.org.consumerdatastandards.client.model;
 
 import java.util.Objects;
+
 /**
  * Object containing details of the destination of the payment. Used to specify a variety of payment destination types
  */
@@ -15,23 +16,39 @@ public class BankingScheduledPaymentTo {
 
     public enum ToUType {
         accountId,
-        biller,
+        payeeId,
         domestic,
-        international,
-        payeeId
+        biller,
+        international
     }
+
+    private ToUType toUType;
 
     private String accountId;
 
-    private BankingBillerPayee biller;
+    private String payeeId;
 
     private BankingDomesticPayee domestic;
 
+    private BankingBillerPayee biller;
+
     private BankingInternationalPayee international;
 
-    private String payeeId;
+    private String nickname;
 
-    private ToUType toUType;
+    private String payeeReference;
+
+    /**
+     * The type of object provided that specifies the destination of the funds for the payment.
+     * @return toUType
+     */
+    public ToUType getToUType() {
+        return toUType;
+    }
+
+    public void setToUType(ToUType toUType) {
+        this.toUType = toUType;
+    }
 
     /**
      * Present if toUType is set to accountId. Indicates that the payment is to another account that is accessible under the current consent
@@ -43,42 +60,6 @@ public class BankingScheduledPaymentTo {
 
     public void setAccountId(String accountId) {
         this.accountId = accountId;
-    }
-
-    /**
-     * Get biller
-     * @return biller
-     */
-    public BankingBillerPayee getBiller() {
-        return biller;
-    }
-
-    public void setBiller(BankingBillerPayee biller) {
-        this.biller = biller;
-    }
-
-    /**
-     * Get domestic
-     * @return domestic
-     */
-    public BankingDomesticPayee getDomestic() {
-        return domestic;
-    }
-
-    public void setDomestic(BankingDomesticPayee domestic) {
-        this.domestic = domestic;
-    }
-
-    /**
-     * Get international
-     * @return international
-     */
-    public BankingInternationalPayee getInternational() {
-        return international;
-    }
-
-    public void setInternational(BankingInternationalPayee international) {
-        this.international = international;
     }
 
     /**
@@ -94,15 +75,63 @@ public class BankingScheduledPaymentTo {
     }
 
     /**
-     * Get toUType
-     * @return toUType
+     * Get domestic
+     * @return domestic
      */
-    public ToUType getToUType() {
-        return toUType;
+    public BankingDomesticPayee getDomestic() {
+        return domestic;
     }
 
-    public void setToUType(ToUType toUType) {
-        this.toUType = toUType;
+    public void setDomestic(BankingDomesticPayee domestic) {
+        this.domestic = domestic;
+    }
+
+    /**
+     * Get biller
+     * @return biller
+     */
+    public BankingBillerPayee getBiller() {
+        return biller;
+    }
+
+    public void setBiller(BankingBillerPayee biller) {
+        this.biller = biller;
+    }
+
+    /**
+     * Get international
+     * @return international
+     */
+    public BankingInternationalPayee getInternational() {
+        return international;
+    }
+
+    public void setInternational(BankingInternationalPayee international) {
+        this.international = international;
+    }
+
+    /**
+     * The short display name of the payee as provided by the customer unless toUType is set to payeeId. Where a customer has not provided a nickname, a display name derived by the bank for payee should be provided that is consistent with existing digital banking channels
+     * @return nickname
+     */
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    /**
+     * The reference for the transaction, if applicable, that will be provided by the originating institution for the specific payment. If not empty, it overrides the value provided at the BankingScheduledPayment level.
+     * @return payeeReference
+     */
+    public String getPayeeReference() {
+        return payeeReference;
+    }
+
+    public void setPayeeReference(String payeeReference) {
+        this.payeeReference = payeeReference;
     }
 
     @Override
@@ -114,34 +143,40 @@ public class BankingScheduledPaymentTo {
             return false;
         }
         BankingScheduledPaymentTo bankingScheduledPaymentTo = (BankingScheduledPaymentTo) o;
-        return Objects.equals(this.accountId, bankingScheduledPaymentTo.accountId) &&
-            Objects.equals(this.biller, bankingScheduledPaymentTo.biller) &&
-            Objects.equals(this.domestic, bankingScheduledPaymentTo.domestic) &&
-            Objects.equals(this.international, bankingScheduledPaymentTo.international) &&
+        return Objects.equals(this.toUType, bankingScheduledPaymentTo.toUType) &&
+            Objects.equals(this.accountId, bankingScheduledPaymentTo.accountId) &&
             Objects.equals(this.payeeId, bankingScheduledPaymentTo.payeeId) &&
-            Objects.equals(this.toUType, bankingScheduledPaymentTo.toUType);
+            Objects.equals(this.nickname, bankingScheduledPaymentTo.nickname) &&
+            Objects.equals(this.payeeReference, bankingScheduledPaymentTo.payeeReference) &&
+            Objects.equals(this.domestic, bankingScheduledPaymentTo.domestic) &&
+            Objects.equals(this.biller, bankingScheduledPaymentTo.biller) &&
+            Objects.equals(this.international, bankingScheduledPaymentTo.international);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
+            toUType,
             accountId,
-            biller,
-            domestic,
-            international,
             payeeId,
-            toUType);
+            nickname,
+            payeeReference,
+            domestic,
+            biller,
+            international);
     }
 
     @Override
     public String toString() {
         return "class BankingScheduledPaymentTo {\n" +
-            "   accountId: " + toIndentedString(accountId) + "\n" + 
-            "   biller: " + toIndentedString(biller) + "\n" + 
-            "   domestic: " + toIndentedString(domestic) + "\n" + 
-            "   international: " + toIndentedString(international) + "\n" + 
-            "   payeeId: " + toIndentedString(payeeId) + "\n" + 
-            "   toUType: " + toIndentedString(toUType) + "\n" + 
+            "   toUType: " + toIndentedString(toUType) + "\n" +
+            "   accountId: " + toIndentedString(accountId) + "\n" +
+            "   payeeId: " + toIndentedString(payeeId) + "\n" +
+            "   nickname: " + toIndentedString(nickname) + "\n" +
+            "   payeeReference: " + toIndentedString(payeeReference) + "\n" +
+            "   domestic: " + toIndentedString(domestic) + "\n" +
+            "   biller: " + toIndentedString(biller) + "\n" +
+            "   international: " + toIndentedString(international) + "\n" +
             "}";
     }
 

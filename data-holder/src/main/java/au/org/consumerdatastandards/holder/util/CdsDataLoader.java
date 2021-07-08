@@ -1,8 +1,9 @@
 package au.org.consumerdatastandards.holder.util;
 
+import au.org.consumerdatastandards.holder.model.BankingAccount;
 import au.org.consumerdatastandards.holder.model.BankingAccountDetail;
 import au.org.consumerdatastandards.holder.model.BankingBalance;
-import au.org.consumerdatastandards.holder.model.BankingProductDetail;
+import au.org.consumerdatastandards.holder.model.BankingProductV2Detail;
 import au.org.consumerdatastandards.holder.model.BankingTransactionDetail;
 import au.org.consumerdatastandards.holder.model.CommonEmailAddress;
 import au.org.consumerdatastandards.holder.model.CommonOrganisationDetail;
@@ -11,8 +12,9 @@ import au.org.consumerdatastandards.holder.model.OrganisationUser;
 import au.org.consumerdatastandards.holder.model.PersonUser;
 import au.org.consumerdatastandards.holder.model.User;
 import au.org.consumerdatastandards.holder.repository.BankingAccountDetailRepository;
+import au.org.consumerdatastandards.holder.repository.BankingAccountRepository;
 import au.org.consumerdatastandards.holder.repository.BankingBalanceRepository;
-import au.org.consumerdatastandards.holder.repository.BankingProductDetailRepository;
+import au.org.consumerdatastandards.holder.repository.BankingProductDetailV2Repository;
 import au.org.consumerdatastandards.holder.repository.BankingTransactionDetailRepository;
 import au.org.consumerdatastandards.holder.repository.CommonOrganisationRepository;
 import au.org.consumerdatastandards.holder.repository.CommonPersonDetailRepository;
@@ -33,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class CdsDataLoader {
@@ -40,8 +43,9 @@ public class CdsDataLoader {
     private static final Logger LOGGER = LogManager.getLogger(CdsDataLoader.class);
     private static final String DEFAULT_PASSWORD = "password";
 
-    private BankingProductDetailRepository productDetailRepository;
+    private BankingProductDetailV2Repository productDetailRepository;
     private BankingAccountDetailRepository accountDetailRepository;
+    private BankingAccountRepository accountRepository;
     private BankingBalanceRepository balanceRepository;
     private CommonPersonDetailRepository commonPersonDetailRepository;
     private BankingTransactionDetailRepository transactionDetailRepository;
@@ -54,8 +58,9 @@ public class CdsDataLoader {
     private int organisationUserIdSeq = 0;
 
     @Autowired
-    public CdsDataLoader(BankingProductDetailRepository productDetailRepository,
+    public CdsDataLoader(BankingProductDetailV2Repository productDetailRepository,
                          BankingAccountDetailRepository accountDetailRepository,
+                         BankingAccountRepository accountRepository,
                          BankingBalanceRepository balanceRepository,
                          CommonPersonDetailRepository commonPersonDetailRepository,
                          BankingTransactionDetailRepository transactionDetailRepository,
@@ -64,6 +69,7 @@ public class CdsDataLoader {
                          CommonOrganisationRepository commonOrganisationRepository) {
         this.productDetailRepository = productDetailRepository;
         this.accountDetailRepository = accountDetailRepository;
+        this.accountRepository = accountRepository;
         this.balanceRepository = balanceRepository;
         this.commonPersonDetailRepository = commonPersonDetailRepository;
         this.transactionDetailRepository = transactionDetailRepository;
@@ -80,7 +86,7 @@ public class CdsDataLoader {
         load("payloads/accounts", accountDetailRepository, BankingAccountDetail.class);
         load("payloads/balances", balanceRepository, BankingBalance.class);
         load("payloads/persons", commonPersonDetailRepository, CommonPersonDetail.class);
-        load("payloads/products", productDetailRepository, BankingProductDetail.class);
+        load("payloads/products", productDetailRepository, BankingProductV2Detail.class);
         load("payloads/transactions", transactionDetailRepository, BankingTransactionDetail.class);
     }
 
@@ -93,14 +99,29 @@ public class CdsDataLoader {
             }
         } else {
             LOGGER.info("Loading data from {}", file.getAbsolutePath());
-            Object savedEntity = repository.save(objectMapper.readValue(file, dataType));
-            if(CommonPersonDetail.class.equals(dataType)) {
+            Object obj = objectMapper.readValue(file, dataType);
+
+            if (dataType.isAssignableFrom(BankingBalance.class)) {
+                assignAccountToBalance((BankingBalance) obj);
+            }
+
+            Object savedEntity = repository.save(obj);
+            if (CommonPersonDetail.class.equals(dataType)) {
                 CommonPersonDetail commonPersonDetail = (CommonPersonDetail)savedEntity;
                 createPersonUser(commonPersonDetail);
             } else if (CommonOrganisationDetail.class.equals(dataType)) {
                 CommonOrganisationDetail commonOrganisationDetail = (CommonOrganisationDetail)savedEntity;
                 createOrganisationUser(commonOrganisationDetail);
             }
+        }
+    }
+
+    private void assignAccountToBalance(BankingBalance balance) {
+        Optional<BankingAccount> account = accountRepository.findById(balance.getAccountId());
+        if (account.isPresent()) {
+            balance.setBankingAccount(account.get());
+        } else {
+            LOGGER.info("Unresolved account ID in balance {}", balance.getAccountId());
         }
     }
 

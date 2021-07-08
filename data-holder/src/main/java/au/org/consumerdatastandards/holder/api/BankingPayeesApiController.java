@@ -38,14 +38,13 @@ public class BankingPayeesApiController extends ApiControllerBase implements Ban
     }
 
     public ResponseEntity<ResponseBankingPayeeById> getPayeeDetail(String payeeId,
-                                                                   String xCdsUserAgent,
-                                                                   String xCdsSubject,
+                                                                   String xCdsClientHeaders,
                                                                    OffsetDateTime xFapiAuthDate,
                                                                    String xFapiCustomerIpAddress,
                                                                    UUID xFapiInteractionId,
                                                                    Integer xMinV,
                                                                    Integer xV) {
-        validateHeaders(xCdsUserAgent, xCdsSubject, xFapiCustomerIpAddress, xMinV, xV);
+        validateHeaders(xCdsClientHeaders, xFapiCustomerIpAddress, xMinV, xV);
         HttpHeaders headers = generateResponseHeaders(request);
         BankingPayeeDetail payeeDetail = payeeService.getBankingPayeeDetail(payeeId);
         if (payeeDetail == null) {
@@ -60,15 +59,14 @@ public class BankingPayeesApiController extends ApiControllerBase implements Ban
     public ResponseEntity<ResponseBankingPayeeList> listPayees(Integer page,
                                                                Integer pageSize,
                                                                ParamPayeeType type,
-                                                               String xCdsUserAgent,
-                                                               String xCdsSubject,
+                                                               String xCdsClientHeaders,
                                                                OffsetDateTime xFapiAuthDate,
                                                                String xFapiCustomerIpAddress,
                                                                UUID xFapiInteractionId,
                                                                Integer xMinV,
                                                                Integer xV) {
-        validateHeaders(xCdsUserAgent, xCdsSubject, xFapiCustomerIpAddress, xMinV, xV);
-        validatePageInputs(page, pageSize);
+        validateHeaders(xCdsClientHeaders, xFapiCustomerIpAddress, xMinV, xV);
+        validatePageSize(pageSize);
         HttpHeaders headers = generateResponseHeaders(request);
         Integer actualPage = getPagingValue(page, 1);
         Integer actualPageSize = getPagingValue(pageSize, 25);
@@ -78,6 +76,7 @@ public class BankingPayeesApiController extends ApiControllerBase implements Ban
             payeeType = BankingPayee.Type.valueOf(type.name());
         }
         Page<BankingPayee> payeePage = payeeService.getBankingPayees(payeeType, PageRequest.of(actualPage - 1, actualPageSize));
+        validatePageRange(actualPage, payeePage.getTotalPages());
         listData.setPayees(payeePage.getContent());
         ResponseBankingPayeeList responseBankingPayeeList = new ResponseBankingPayeeList();
         responseBankingPayeeList.setData(listData);

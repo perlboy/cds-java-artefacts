@@ -20,8 +20,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,21 +47,21 @@ public class BankingDirectDebitsApiController extends ApiControllerBase implemen
     public ResponseEntity<ResponseBankingDirectDebitAuthorisationList> listDirectDebits(String accountId,
                                                                                         Integer page,
                                                                                         Integer pageSize,
-                                                                                        String xCdsUserAgent,
-                                                                                        String xCdsSubject,
+                                                                                        String xCdsClientHeaders,
                                                                                         OffsetDateTime xFapiAuthDate,
                                                                                         String xFapiCustomerIpAddress,
                                                                                         UUID xFapiInteractionId,
                                                                                         Integer xMinV,
                                                                                         Integer xV) {
-        validateHeaders(xCdsUserAgent, xCdsSubject, xFapiCustomerIpAddress, xMinV, xV);
-        validatePageInputs(page, pageSize);
+        validateHeaders(xCdsClientHeaders, xFapiCustomerIpAddress, xMinV, xV);
+        validatePageSize(pageSize);
         HttpHeaders headers = generateResponseHeaders(request);
         Integer actualPage = getPagingValue(page, 1);
         Integer actualPageSize = getPagingValue(pageSize, 25);
         ResponseBankingDirectDebitAuthorisationListData listData = new ResponseBankingDirectDebitAuthorisationListData();
         Page<BankingDirectDebit> directDebitPage =
             directDebitService.getBankingDirectDebits(accountId, PageRequest.of(actualPage - 1, actualPageSize));
+        validatePageRange(actualPage, directDebitPage.getTotalPages());
         return getResponse(headers, actualPage, actualPageSize, listData, directDebitPage);
     }
 
@@ -73,15 +71,14 @@ public class BankingDirectDebitsApiController extends ApiControllerBase implemen
                                                                                             ParamProductCategory paramProductCategory,
                                                                                             Integer page,
                                                                                             Integer pageSize,
-                                                                                            String xCdsUserAgent,
-                                                                                            String xCdsSubject,
+                                                                                            String xCdsClientHeaders,
                                                                                             OffsetDateTime xFapiAuthDate,
                                                                                             String xFapiCustomerIpAddress,
                                                                                             UUID xFapiInteractionId,
                                                                                             Integer xMinV,
                                                                                             Integer xV) {
-        validateHeaders(xCdsUserAgent, xCdsSubject, xFapiCustomerIpAddress, xMinV, xV);
-        validatePageInputs(page, pageSize);
+        validateHeaders(xCdsClientHeaders, xFapiCustomerIpAddress, xMinV, xV);
+        validatePageSize(pageSize);
         HttpHeaders headers = generateResponseHeaders(request);
         Integer actualPage = getPagingValue(page, 1);
         Integer actualPageSize = getPagingValue(pageSize, 25);
@@ -96,27 +93,28 @@ public class BankingDirectDebitsApiController extends ApiControllerBase implemen
         }
         Page<BankingDirectDebit> directDebitPage =
             directDebitService.getBankingDirectDebits(isOwned, productCategory, openStatus, PageRequest.of(actualPage - 1, actualPageSize));
+        validatePageRange(actualPage, directDebitPage.getTotalPages());
         return getResponse(headers, actualPage, actualPageSize, listData, directDebitPage);
     }
 
     public ResponseEntity<ResponseBankingDirectDebitAuthorisationList> listDirectDebitsSpecificAccounts(RequestAccountIds accountIds,
                                                                                                         Integer page,
                                                                                                         Integer pageSize,
-                                                                                                        String xCdsUserAgent,
-                                                                                                        String xCdsSubject,
+                                                                                                        String xCdsClientHeaders,
                                                                                                         OffsetDateTime xFapiAuthDate,
                                                                                                         String xFapiCustomerIpAddress,
                                                                                                         UUID xFapiInteractionId,
                                                                                                         Integer xMinV,
                                                                                                         Integer xV) {
-        validateHeaders(xCdsUserAgent, xCdsSubject, xFapiCustomerIpAddress, xMinV, xV);
-        validatePageInputs(page, pageSize);
+        validateHeaders(xCdsClientHeaders, xFapiCustomerIpAddress, xMinV, xV);
+        validatePageSize(pageSize);
         HttpHeaders headers = generateResponseHeaders(request);
         Integer actualPage = getPagingValue(page, 1);
         Integer actualPageSize = getPagingValue(pageSize, 25);
         ResponseBankingDirectDebitAuthorisationListData listData = new ResponseBankingDirectDebitAuthorisationListData();
         Page<BankingDirectDebit> directDebitPage =
             directDebitService.getBankingDirectDebits(accountIds.getData().getAccountIds(), PageRequest.of(actualPage - 1, actualPageSize));
+        validatePageRange(actualPage, directDebitPage.getTotalPages());
         return getResponse(headers, actualPage, actualPageSize, listData, directDebitPage);
     }
 

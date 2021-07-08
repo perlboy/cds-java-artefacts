@@ -18,26 +18,40 @@ public class BankingPayee {
         INTERNATIONAL
     }
 
-    private LocalDate creationDate;
-
-    private String description;
+    private String payeeId;
 
     private String nickname;
 
-    private String payeeId;
+    private String description;
 
     private Type type;
 
+    private LocalDate creationDate;
+
     /**
-     * The date the payee was created by the customer
-     * @return creationDate
+     * ID of the payee adhering to the rules of ID permanence
+     * @return payeeId
      */
-    public LocalDate getCreationDate() {
-        return creationDate;
+    public String getPayeeId() {
+        return payeeId;
     }
 
-    public void setCreationDate(LocalDate creationDate) {
-        this.creationDate = creationDate;
+    public void setPayeeId(String payeeId) {
+        this.payeeId = payeeId;
+    }
+
+    /**
+     * The short display name of the payee as provided by the customer.
+     * Where a customer has not provided a nickname, a display name derived by the bank for the payee consistent
+     * with existing digital banking channels
+     * @return nickname
+     */
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     /**
@@ -53,31 +67,7 @@ public class BankingPayee {
     }
 
     /**
-     * The short display name of the payee as provided by the customer
-     * @return nickname
-     */
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    /**
-     * ID of the payee adhering to the rules of ID permanence
-     * @return payeeId
-     */
-    public String getPayeeId() {
-        return payeeId;
-    }
-
-    public void setPayeeId(String payeeId) {
-        this.payeeId = payeeId;
-    }
-
-    /**
-     * Get type
+     * The type of payee. DOMESTIC means a registered payee for domestic payments including NPP. INTERNATIONAL means a registered payee for international payments. BILLER means a registered payee for BPAY
      * @return type
      */
     public Type getType() {
@@ -86,6 +76,18 @@ public class BankingPayee {
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    /**
+     * The date the payee was created by the customer
+     * @return creationDate
+     */
+    public LocalDate getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
     }
 
     @Override
@@ -97,31 +99,31 @@ public class BankingPayee {
             return false;
         }
         BankingPayee bankingPayee = (BankingPayee) o;
-        return Objects.equals(this.creationDate, bankingPayee.creationDate) &&
-            Objects.equals(this.description, bankingPayee.description) &&
+        return Objects.equals(this.payeeId, bankingPayee.payeeId) &&
             Objects.equals(this.nickname, bankingPayee.nickname) &&
-            Objects.equals(this.payeeId, bankingPayee.payeeId) &&
-            Objects.equals(this.type, bankingPayee.type);
+            Objects.equals(this.description, bankingPayee.description) &&
+            Objects.equals(this.type, bankingPayee.type) &&
+            Objects.equals(this.creationDate, bankingPayee.creationDate);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
-            creationDate,
-            description,
-            nickname,
             payeeId,
-            type);
+            nickname,
+            description,
+            type,
+            creationDate);
     }
 
     @Override
     public String toString() {
         return "class BankingPayee {\n" +
-            "   creationDate: " + toIndentedString(creationDate) + "\n" + 
-            "   description: " + toIndentedString(description) + "\n" + 
-            "   nickname: " + toIndentedString(nickname) + "\n" + 
             "   payeeId: " + toIndentedString(payeeId) + "\n" + 
+            "   nickname: " + toIndentedString(nickname) + "\n" + 
+            "   description: " + toIndentedString(description) + "\n" + 
             "   type: " + toIndentedString(type) + "\n" + 
+            "   creationDate: " + toIndentedString(creationDate) + "\n" + 
             "}";
     }
 

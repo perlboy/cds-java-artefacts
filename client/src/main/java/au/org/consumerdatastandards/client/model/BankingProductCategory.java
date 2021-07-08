@@ -12,28 +12,27 @@ package au.org.consumerdatastandards.client.model;
  * The category to which a product or account belongs. See [here](#product-categories) for more details
  */
 public enum BankingProductCategory {
-  
     BUSINESS_LOANS,
-  
+
     CRED_AND_CHRG_CARDS,
-  
+
     LEASES,
-  
+
     MARGIN_LOANS,
-  
+
     OVERDRAFTS,
-  
+
     PERS_LOANS,
-  
+
     REGULATED_TRUST_ACCOUNTS,
-  
+
     RESIDENTIAL_MORTGAGES,
-  
+
     TERM_DEPOSITS,
-  
+
     TRADE_FINANCE,
-  
-    TRANS_AND_SAVINGS_ACCOUNTS,
-  
-    TRAVEL_CARDS
+
+    TRAVEL_CARDS,
+
+    TRANS_AND_SAVINGS_ACCOUNTS
 }

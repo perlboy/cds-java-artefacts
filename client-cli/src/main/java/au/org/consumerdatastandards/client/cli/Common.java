@@ -7,9 +7,11 @@
  */
 package au.org.consumerdatastandards.client.cli;
 
+import au.org.consumerdatastandards.client.ApiClientOptions;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellCommandGroup;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -17,62 +19,29 @@ import org.springframework.shell.standard.ShellOption;
 
 @ShellComponent
 @ShellCommandGroup("Common Functions")
-public class Common extends ApiCliBase {
+public class Common {
+
+    @Autowired
+    private ApiClientOptions apiClientOptions;
 
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(Common.class);
 
-    @ShellMethod("Set CDS server URL, e.g. http://data.holder/cds-au/v1")
+    @ShellMethod("Set CDS server URL, e.g. http://data.holder/cds-au/v1 (Property: server)")
     public void server(@ShellOption String url) {
         apiClientOptions.setServerUrl(url);
         LOGGER.info("Server URL is set to {}", apiClientOptions.getServerUrl());
     }
 
-    @ShellMethod("Set proxy, e.g. http://http-proxy:8080, https://https-proxy:8443, socks://socks-proxy:5050, none")
+    @ShellMethod("Set proxy, e.g. http://http-proxy:8080, https://https-proxy:8443, socks://socks-proxy:5050, none (Property: proxy)")
     public void proxy(@ShellOption String proxy) {
         apiClientOptions.setProxy(proxy);
         LOGGER.info("Proxy is set to {}", apiClientOptions.getProxy());
-    }
-
-    @ShellMethod("Set verifyingSsl, e.g. true, false")
-    public void verifyingSsl(@ShellOption String verifyingSsl) {
-        apiClientOptions.setVerifyingSsl(Boolean.getBoolean(verifyingSsl));
-        LOGGER.info("VerifyingSsl is set to {}", verifyingSsl);
     }
 
     @ShellMethod("Setup minimum log level, default is INFO")
     public void setLogLevel(@ShellOption Level targetLevel) {
         Logger root = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
         root.setLevel(targetLevel);
-    }
-
-    @ShellMethod("Setup client certificate and CA to enable MTLS connection to the server")
-    public void setupMTLS(@ShellOption("root CA file path") String rootCaPath,
-                          @ShellOption("client cert file path") String certFilePath,
-                          @ShellOption("client key file path") String keyFilePath,
-                          @ShellOption(value = "enable MTLS or not", defaultValue = "true") boolean mtlsEnabled) {
-        apiClientOptions.setRootCaFilePath(rootCaPath);
-        LOGGER.info("Root CA file path is set to {}", rootCaPath);
-        apiClientOptions.setCertFilePath(certFilePath);
-        LOGGER.info("Client certificate file path is set to {}", certFilePath);
-        apiClientOptions.setKeyFilePath(keyFilePath);
-        LOGGER.info("Client key file path is set to {}", keyFilePath);
-        if (mtlsEnabled) {
-            enableMTLS();
-        } else {
-            disableMTLS();
-        }
-    }
-
-    @ShellMethod("Enable MTLS")
-    public void enableMTLS() {
-        apiClientOptions.setMtlsEnabled(true);
-        LOGGER.info("MTLS enabled");
-    }
-
-    @ShellMethod("Disable MTLS")
-    public void disableMTLS() {
-        apiClientOptions.setMtlsEnabled(false);
-        LOGGER.info("MTLS disabled");
     }
 
     @ShellMethod("Retrieve current minimum log level")
@@ -85,7 +54,7 @@ public class Common extends ApiCliBase {
         root.setLevel(currentLevel);
     }
 
-    @ShellMethod("Set browser user-agent")
+    @ShellMethod("Set browser user-agent. Sent in User-Agent and x-cds-client-headers HTTP headers. Default is Client CLI (Property: user.agent)")
     public void setUserAgent(@ShellOption String userAgent) {
         apiClientOptions.setUserAgent(userAgent);
     }
@@ -107,10 +76,5 @@ public class Common extends ApiCliBase {
         Logger root = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
         root.setLevel(Level.INFO);
         LOGGER.info("Client debug is currently set to: {}", apiClientOptions.isDebugEnabled());
-    }
-
-    @ShellMethod("Set access token to send as the Authorization: Bearer header")
-    public void accessToken(@ShellOption String jwt) {
-        apiClientOptions.setAccessToken(jwt);
     }
 }

@@ -1,5 +1,9 @@
 FROM openjdk:8-jre
-MAINTAINER Data61 <cdr-data61@csiro.au>
+LABEL maintainer="Data Standards Body <technical@consumerdatastandards.gov.au>"
+
+EXPOSE 8686/tcp
+
+ADD keystore /keystore
 
 ARG JAR_FILE
 ADD target/${JAR_FILE} /opt/cds-java-artefacts/client-cli.jar

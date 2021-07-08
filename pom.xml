@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>au.org.consumerdatastandards</groupId>
     <artifactId>cds-java-artefacts</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.11.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>CDS Java Artefacts</name>
     <description>A collection of Java artefacts for Consumer Data Standards Australia</description>
@@ -20,9 +20,9 @@
     <developers>
         <developer>
             <name>Consumer Data Standards Australia</name>
-            <email>cdr-data61@csiro.au</email>
-            <organization>Data61</organization>
-            <organizationUrl>https://data61.csiro.au/</organizationUrl>
+            <email>technical@consumerdatastandards.gov.au</email>
+            <organization>Data Standards Body</organization>
+            <organizationUrl>https://consumerdatastandards.gov.au</organizationUrl>
         </developer>
     </developers>
 
@@ -55,9 +55,8 @@
         <jackson.version>2.10.1</jackson.version>
         <junit.version>5.5.0</junit.version>
         <jacoco.version>0.8.4</jacoco.version>
-        <reflections.version>0.9.11</reflections.version>
         <swagger-core.version>1.5.24</swagger-core.version>
-        <spring-boot.version>2.1.5.RELEASE</spring-boot.version>
+        <spring-boot.version>2.2.1.RELEASE</spring-boot.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
         <commons-validator.version>1.6</commons-validator.version>
         <commons-codec.version>1.13</commons-codec.version>
@@ -65,13 +64,10 @@
     </properties>
 
     <modules>
-        <module>api-model</module>
-        <module>reflection</module>
-        <module>codegen</module>
         <module>client</module>
         <module>client-cli</module>
-        <module>reference-test</module>
         <module>data-holder</module>
+        <module>integration-test</module>
     </modules>
 
     <distributionManagement>
@@ -275,11 +271,6 @@
                 <version>${commons-lang3.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.reflections</groupId>
-                <artifactId>reflections</artifactId>
-                <version>${reflections.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.maven.scm</groupId>
                 <artifactId>maven-scm-provider-gitexe</artifactId>
                 <version>${maven-scm-provider-gitext.version}</version>
@@ -311,27 +302,7 @@
             </dependency>
             <dependency>
                 <groupId>au.org.consumerdatastandards</groupId>
-                <artifactId>api-model</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>au.org.consumerdatastandards</groupId>
                 <artifactId>client</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>au.org.consumerdatastandards</groupId>
-                <artifactId>codegen</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>au.org.consumerdatastandards</groupId>
-                <artifactId>reflection</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>au.org.consumerdatastandards</groupId>
-                <artifactId>reference-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -357,8 +328,14 @@
                 <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>8.2.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
     <profiles>
         <profile>
             <id>release</id>

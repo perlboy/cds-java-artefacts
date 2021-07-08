@@ -107,7 +107,7 @@ public class BankingAccountDetail {
         name = "banking_account_deposit_rates",
         joinColumns = @JoinColumn(name = "banking_account_id"),
         inverseJoinColumns = @JoinColumn(name = "deposit_rate_id"))
-    private List<BankingProductDepositRate> depositRates;
+    private List<BankingProductDepositRateV1> depositRates;
 
     /**
      * Array of features of the account based on the equivalent structure in Product Reference with the following additional field
@@ -138,15 +138,15 @@ public class BankingAccountDetail {
         name = "banking_account_lending_rates",
         joinColumns = @JoinColumn(name = "banking_account_id"),
         inverseJoinColumns = @JoinColumn(name = "lending_rate_id"))
-    private List<BankingProductLendingRate> lendingRates;
+    private List<BankingProductLendingRateV1> lendingRates;
 
     @ManyToOne
     private BankingLoanAccount loan;
 
     private SpecificAccountUType specificAccountUType;
 
-    @ManyToOne
-    private BankingTermDepositAccount termDeposit;
+    @OneToMany(mappedBy = "bankingAccountDetail")
+    private List<BankingTermDepositAccount> termDeposit;
 
     public String getAccountId() {
         return accountId;
@@ -365,12 +365,12 @@ public class BankingAccountDetail {
         this.depositRate = depositRate;
     }
 
-    public BankingAccountDetail depositRates(List<BankingProductDepositRate> depositRates) {
+    public BankingAccountDetail depositRates(List<BankingProductDepositRateV1> depositRates) {
         this.depositRates = depositRates;
         return this;
     }
 
-    public BankingAccountDetail addItem(BankingProductDepositRate depositRatesItem) {
+    public BankingAccountDetail addItem(BankingProductDepositRateV1 depositRatesItem) {
         if (this.depositRates == null) {
             this.depositRates = new ArrayList<>();
         }
@@ -379,11 +379,11 @@ public class BankingAccountDetail {
     }
 
     @ApiModelProperty(value = "Fully described deposit rates for this account based on the equivalent structure in Product Reference")
-    public List<BankingProductDepositRate> getDepositRates() {
+    public List<BankingProductDepositRateV1> getDepositRates() {
         return depositRates;
     }
 
-    public void setDepositRates(List<BankingProductDepositRate> depositRates) {
+    public void setDepositRates(List<BankingProductDepositRateV1> depositRates) {
         this.depositRates = depositRates;
     }
 
@@ -445,12 +445,12 @@ public class BankingAccountDetail {
         this.lendingRate = lendingRate;
     }
 
-    public BankingAccountDetail lendingRates(List<BankingProductLendingRate> lendingRates) {
+    public BankingAccountDetail lendingRates(List<BankingProductLendingRateV1> lendingRates) {
         this.lendingRates = lendingRates;
         return this;
     }
 
-    public BankingAccountDetail addItem(BankingProductLendingRate lendingRatesItem) {
+    public BankingAccountDetail addItem(BankingProductLendingRateV1 lendingRatesItem) {
         if (this.lendingRates == null) {
             this.lendingRates = new ArrayList<>();
         }
@@ -459,11 +459,11 @@ public class BankingAccountDetail {
     }
 
     @ApiModelProperty(value = "Fully described deposit rates for this account based on the equivalent structure in Product Reference")
-    public List<BankingProductLendingRate> getLendingRates() {
+    public List<BankingProductLendingRateV1> getLendingRates() {
         return lendingRates;
     }
 
-    public void setLendingRates(List<BankingProductLendingRate> lendingRates) {
+    public void setLendingRates(List<BankingProductLendingRateV1> lendingRates) {
         this.lendingRates = lendingRates;
     }
 
@@ -495,17 +495,17 @@ public class BankingAccountDetail {
         this.specificAccountUType = specificAccountUType;
     }
 
-    public BankingAccountDetail termDeposit(BankingTermDepositAccount termDeposit) {
+    public BankingAccountDetail termDeposit(List<BankingTermDepositAccount> termDeposit) {
         this.termDeposit = termDeposit;
         return this;
     }
 
     @ApiModelProperty
-    public BankingTermDepositAccount getTermDeposit() {
+    public List<BankingTermDepositAccount> getTermDeposit() {
         return termDeposit;
     }
 
-    public void setTermDeposit(BankingTermDepositAccount termDeposit) {
+    public void setTermDeposit(List<BankingTermDepositAccount> termDeposit) {
         this.termDeposit = termDeposit;
     }
 
@@ -558,29 +558,29 @@ public class BankingAccountDetail {
     @Override
     public String toString() {
         return "class BankingAccountDetail {\n" +
-            "   accountId: " + toIndentedString(getAccountId()) + "\n" + 
-            "   creationDate: " + toIndentedString(getCreationDate()) + "\n" + 
-            "   displayName: " + toIndentedString(getDisplayName()) + "\n" + 
-            "   isOwned: " + toIndentedString(getIsOwned()) + "\n" + 
-            "   maskedNumber: " + toIndentedString(getMaskedNumber()) + "\n" + 
-            "   nickname: " + toIndentedString(getNickname()) + "\n" + 
-            "   openStatus: " + toIndentedString(getOpenStatus()) + "\n" + 
-            "   productCategory: " + toIndentedString(getProductCategory()) + "\n" + 
-            "   productName: " + toIndentedString(getProductName()) + "\n" + 
-            "   accountNumber: " + toIndentedString(accountNumber) + "\n" + 
-            "   addresses: " + toIndentedString(addresses) + "\n" + 
-            "   bsb: " + toIndentedString(bsb) + "\n" + 
-            "   bundleName: " + toIndentedString(bundleName) + "\n" + 
-            "   creditCard: " + toIndentedString(creditCard) + "\n" + 
-            "   depositRate: " + toIndentedString(depositRate) + "\n" + 
-            "   depositRates: " + toIndentedString(depositRates) + "\n" + 
-            "   features: " + toIndentedString(features) + "\n" + 
-            "   fees: " + toIndentedString(fees) + "\n" + 
-            "   lendingRate: " + toIndentedString(lendingRate) + "\n" + 
-            "   lendingRates: " + toIndentedString(lendingRates) + "\n" + 
-            "   loan: " + toIndentedString(loan) + "\n" + 
-            "   specificAccountUType: " + toIndentedString(specificAccountUType) + "\n" + 
-            "   termDeposit: " + toIndentedString(termDeposit) + "\n" + 
+            "   accountId: " + toIndentedString(getAccountId()) + "\n" +
+            "   creationDate: " + toIndentedString(getCreationDate()) + "\n" +
+            "   displayName: " + toIndentedString(getDisplayName()) + "\n" +
+            "   isOwned: " + toIndentedString(getIsOwned()) + "\n" +
+            "   maskedNumber: " + toIndentedString(getMaskedNumber()) + "\n" +
+            "   nickname: " + toIndentedString(getNickname()) + "\n" +
+            "   openStatus: " + toIndentedString(getOpenStatus()) + "\n" +
+            "   productCategory: " + toIndentedString(getProductCategory()) + "\n" +
+            "   productName: " + toIndentedString(getProductName()) + "\n" +
+            "   accountNumber: " + toIndentedString(accountNumber) + "\n" +
+            "   addresses: " + toIndentedString(addresses) + "\n" +
+            "   bsb: " + toIndentedString(bsb) + "\n" +
+            "   bundleName: " + toIndentedString(bundleName) + "\n" +
+            "   creditCard: " + toIndentedString(creditCard) + "\n" +
+            "   depositRate: " + toIndentedString(depositRate) + "\n" +
+            "   depositRates: " + toIndentedString(depositRates) + "\n" +
+            "   features: " + toIndentedString(features) + "\n" +
+            "   fees: " + toIndentedString(fees) + "\n" +
+            "   lendingRate: " + toIndentedString(lendingRate) + "\n" +
+            "   lendingRates: " + toIndentedString(lendingRates) + "\n" +
+            "   loan: " + toIndentedString(loan) + "\n" +
+            "   specificAccountUType: " + toIndentedString(specificAccountUType) + "\n" +
+            "   termDeposit: " + toIndentedString(termDeposit) + "\n" +
             "}";
     }
 

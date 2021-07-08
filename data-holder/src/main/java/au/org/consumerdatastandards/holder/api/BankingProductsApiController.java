@@ -1,26 +1,35 @@
 package au.org.consumerdatastandards.holder.api;
 
-import au.org.consumerdatastandards.holder.model.*;
+import au.org.consumerdatastandards.holder.model.BankingProduct;
+import au.org.consumerdatastandards.holder.model.BankingProductCategory;
+import au.org.consumerdatastandards.holder.model.BankingProductDetail;
+import au.org.consumerdatastandards.holder.model.BankingProductV2;
+import au.org.consumerdatastandards.holder.model.Links;
+import au.org.consumerdatastandards.holder.model.ParamEffective;
+import au.org.consumerdatastandards.holder.model.ResponseBankingProductById;
+import au.org.consumerdatastandards.holder.model.ResponseBankingProductList;
+import au.org.consumerdatastandards.holder.model.ResponseBankingProductListData;
 import au.org.consumerdatastandards.holder.service.BankingProductService;
 import au.org.consumerdatastandards.holder.util.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @Validated
 @Controller
+@CrossOrigin
 @RequestMapping("${openapi.consumerDataStandards.base-path:/cds-au/v1}")
 public class BankingProductsApiController extends ApiControllerBase implements BankingProductsApi {
 
@@ -42,9 +51,9 @@ public class BankingProductsApiController extends ApiControllerBase implements B
     public ResponseEntity<ResponseBankingProductById> getProductDetail(String productId,
                                                                        Integer xMinV,
                                                                        Integer xV) {
-        validateHeaders(xMinV, xV);
+        validateSupportedVersion(xMinV, xV);
         HttpHeaders headers = generateResponseHeaders(request);
-        BankingProductDetail productDetail = service.getProductDetail(productId);
+        BankingProductDetail productDetail = service.getProductDetail(productId, getSupportedVersion(xMinV, xV));
         if (productDetail == null) {
             return new ResponseEntity<>(null, headers, HttpStatus.NOT_FOUND);
         }
@@ -71,10 +80,10 @@ public class BankingProductsApiController extends ApiControllerBase implements B
         logger.info(
             "Initiating product list call with supplied input of effective from {}, updated since {}, brand of {}, product category of {} for page {} with page size of {}",
             effective, updatedSince, brand, productCategory, page, pageSize);
-        validateHeaders(xMinV, xV);
-        validatePageInputs(page, pageSize);
+        validateSupportedVersion(xMinV, xV);
+        validatePageSize(pageSize);
         HttpHeaders headers = generateResponseHeaders(request);
-        BankingProduct bankingProduct = new BankingProduct();
+        BankingProduct bankingProduct = new BankingProductV2();
         bankingProduct.setLastUpdated(updatedSince);
         bankingProduct.setBrand(brand);
         if (productCategory != null) {
@@ -84,12 +93,14 @@ public class BankingProductsApiController extends ApiControllerBase implements B
         Integer actualPage = getPagingValue(page, 1);
         Integer actualPageSize = getPagingValue(pageSize, 25);
         Page<BankingProduct> productsPage = service.findProductsLike(effective, bankingProduct,
-            PageRequest.of(actualPage - 1, actualPageSize));
+            PageRequest.of(actualPage - 1, actualPageSize, Sort.by(Sort.Direction.DESC, "lastUpdated")), getSupportedVersion(xMinV, xV));
 
         logger.info(
             "Returning basic product listing page {} of {} (page size of {}) using filters of effective {}, updated since {}, brand {}, product category of {}",
             actualPage, productsPage.getTotalPages(), actualPageSize, effective, updatedSince, brand,
             productCategory);
+
+        validatePageRange(page, productsPage.getTotalPages());
 
         ResponseBankingProductListData listData = new ResponseBankingProductListData();
         listData.setProducts(productsPage.getContent());
@@ -103,5 +114,10 @@ public class BankingProductsApiController extends ApiControllerBase implements B
 
         logger.debug("Product listing raw response payload is: {}", responseProductList);
         return new ResponseEntity<>(responseProductList, headers, HttpStatus.OK);
+    }
+
+    @Override
+    protected Integer getCurrentVersion() {
+        return 3;
     }
 }

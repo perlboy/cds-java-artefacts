@@ -49,7 +49,7 @@ public class BankingTransaction  {
     private String billerName;
 
     /**
-     * BPAY CRN for the transaction (if available)
+     * BPAY CRN for the transaction (if available).<br>Where the CRN contains sensitive information, it should be masked in line with how the Data Holder currently displays account identifiers in their existing online banking channels. If the contents of the CRN match the format of a Credit Card PAN they should be masked according to the rules applicable for MaskedPANString. If the contents are are otherwise sensitive, then it should be masked using the rules applicable for the MaskedAccountString common type.
      */
     private String crn;
 
@@ -181,7 +181,7 @@ public class BankingTransaction  {
         return this;
     }
 
-    @ApiModelProperty(value = "BPAY CRN for the transaction (if available)")
+    @ApiModelProperty(value = "BPAY CRN for the transaction (if available).<br>Where the CRN contains sensitive information, it should be masked in line with how the Data Holder currently displays account identifiers in their existing online banking channels. If the contents of the CRN match the format of a Credit Card PAN they should be masked according to the rules applicable for MaskedPANString. If the contents are are otherwise sensitive, then it should be masked using the rules applicable for the MaskedAccountString common type.")
     public String getCrn() {
         return crn;
     }
@@ -447,10 +447,10 @@ public class BankingTransaction  {
         FEE,
         INTEREST_CHARGED,
         INTEREST_PAID,
-        OTHER,
         PAYMENT,
         TRANSFER_INCOMING,
-        TRANSFER_OUTGOING
+        TRANSFER_OUTGOING,
+        OTHER
     }
 
     public enum Status {
